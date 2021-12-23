@@ -1,0 +1,11 @@
+.simplebar-content-wrapper_full-screen {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.simplebar-content-wrapper_full-screen .simplebar-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
