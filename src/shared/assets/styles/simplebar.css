@@ -1,4 +1,4 @@
-/* .simplebar-content-wrapper_full-screen {
+.simplebar-content-wrapper_full-screen {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -8,6 +8,4 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-} */
-
-@import './simplebar.css';
+}

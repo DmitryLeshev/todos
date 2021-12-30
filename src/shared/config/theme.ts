@@ -32,6 +32,10 @@ export const background = {
 };
 
 export const colors = {
-  primary: "#1CC8EE",
-  secondary: "#FE33D1",
+  primary: "#00bffe",
+  secondary: "#f8510f",
 };
+
+// primary #00bffe
+// secondary #f8510f
+// bg #16232d

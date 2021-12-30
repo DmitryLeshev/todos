@@ -4,6 +4,7 @@ const BASE_PATH = "/auth"
 
 const authRequest = apiInstance(BASE_PATH);
 
+
 export enum Authorities {
     Admin = 'admin',
 }
@@ -14,6 +15,19 @@ export type Session = {
     ip: string
     sessionId: string
     token: string | null
+}
+
+export const DEFAULT_SESSION: Session = {
+    accountId: 0,
+    data: {
+        authorities: Authorities.Admin,
+        email: '',
+        firstName: '',
+        lastName: '',
+    },
+    ip: '',
+    sessionId: '',
+    token: null
 }
 
 type DTOSignUp = {

@@ -1,8 +1,15 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { DefaultTemplate } from "shared/ui";
+import type { Todos, Pagination } from '../model'
 
-const TodosPage: React.FC = () => {
+
+type Props = {
+  todos: Todos,
+  pagination: Pagination | null,
+  isLoading: boolean
+};
+const TodosPage: React.FC<Props> = ({ todos, pagination, isLoading }) => {
   return (
     <DefaultTemplate helmet='home-page' scrollbar style={{
       backgroundImage: "url(https://source.unsplash.com/random)",
@@ -21,6 +28,23 @@ const TodosPage: React.FC = () => {
         <Typography padding={3} variant='h3' color='black'>
           Description
         </Typography>
+
+        <div>
+          <Box component='ul' sx={{ display: 'flex', flexDirection: 'column' }}>
+            {todos.map((todo, index) => {
+              return <Box component='li' key={index}>{todo.name}</Box>
+            })}
+          </Box>
+        </div>
+
+        <div>
+          <Box component='ul' sx={{ display: 'flex' }}>
+            {Array.from({ length: pagination?.totalPages ?? 0 }, (_, i) => ++i).map((count) => {
+              return <Box component='li' key={count}>{count}</Box>
+            })}
+          </Box>
+        </div>
+
       </Box>
     </DefaultTemplate>
   );

@@ -14,7 +14,5 @@ const addViewer = createEvent<Viewer | null>();
 const $viewer = createStore<Viewer | null>(null);
 $viewer.on(addViewer, (_, viewer) => viewer);
 
-$viewer.watch((state) => console.log("Viewer State: ", state))
-
 export const stores = { $viewer }
 export const actions = { addViewer }

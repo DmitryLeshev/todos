@@ -1,23 +1,19 @@
-import { createEffect, createEvent, createStore, forward, sample } from "effector";
+import { createEvent, createStore, forward, sample } from "effector";
 import { viewerModel } from 'entities/viewer'
+import { sessionModel } from 'entities/session'
+import { appStatusModel } from 'entities/app-status'
+
 import { signInModel } from 'features/sign-in'
 import { signOutModel } from 'features/sign-out'
 import { signUpModel } from 'features/sign-up'
-
-import * as api from 'shared/api';
-
-const sessionInfoFx = createEffect(() => {
-    console.log("sessionInfoFx")
-    return api.auth.sessionInfo()
-})
 
 const changeAuth = createEvent<boolean>();
 const $isAuth = createStore<boolean>(false);
 $isAuth.on(changeAuth, (_, value) => value);
 
 sample({
-    source: sessionInfoFx.doneData,
-    clock: sessionInfoFx.doneData,
+    source: sessionModel.actions.sessionInfoFx.doneData,
+    clock: sessionModel.actions.sessionInfoFx.doneData,
     fn: (response) => {
         if (!response.data) return null;
         const { accountId, data: { authorities, email, firstName, lastName } } = response.data;
@@ -35,19 +31,16 @@ sample({
 
 sample({
     source: viewerModel.stores.$viewer,
-    fn: (viewer) => viewer ? true : false,
-    target: changeAuth
+    clock: sessionModel.actions.sessionInfoFx.doneData,
+    fn: (viewer) => viewer ? appStatusModel.Status.IS_AUTH : appStatusModel.Status.IS_NOT_AUTH,
+    target: appStatusModel.actions.changeStatus
 })
 
 forward({
     from: [signInModel.actions.signInFx.doneData, signOutModel.actions.signOutFx.doneData, signUpModel.actions.signUpFx.doneData],
-    to: sessionInfoFx
+    to: sessionModel.actions.checkSession
 })
 
-$isAuth.watch((state) => {
-    console.log("Is Auth: ", state);
-});
-
-sessionInfoFx()
+sessionModel.actions.checkSession();
 
 export const stores = { $isAuth };
