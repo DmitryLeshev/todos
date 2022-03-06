@@ -10,6 +10,7 @@ import { appStatusModel } from "entities/app-status";
 
 import { Header } from "widget/header";
 import { Footer } from "widget/footer";
+import { PopupComponent } from "widget/popups";
 
 import { SignInPage } from "./sign-in";
 import { SignUpPage } from "./sign-up";
@@ -35,44 +36,67 @@ type Props = { appStatus: appStatusModel.AppStatus };
 
 const View: React.FC<Props> = ({ appStatus }) => {
   const { pathname } = useLocation();
+
   if (appStatus === appStatusModel.Status.NOT_READY) {
-    return <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
-      <Loader.Circular />
-    </Box>
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexGrow: 1,
+        }}
+      >
+        <Loader.Circular />
+      </Box>
+    );
   }
+
   const isAuth = appStatus === appStatusModel.Status.IS_AUTH;
   const routes = isAuth ? IS_AUTH_ROUTES : IS_NOT_AUTH_ROUTES;
-  const authRedirectUrl = Object.entries(navigation.authorized).some(([, page]) => `/${page.path}` === pathname) ? pathname : navigation.authorized.home.path;
-  const redirectUrl = isAuth ? authRedirectUrl : navigation.unauthorized.signIn.path;
+
+  const authRedirectUrl = Object.entries(navigation.authorized).some(
+    ([, page]) => `/${page.path}` === pathname
+  )
+    ? pathname
+    : navigation.authorized.home.path;
+
+  const redirectUrl = isAuth
+    ? authRedirectUrl
+    : navigation.unauthorized.signIn.path;
 
   return (
-    <Routes>
-      <Route path="/" element={<PageLayout isAuth={isAuth} />}>
-        {routes.map(({ path, component: Component }, index) => {
-          return <Route key={index} path={path} element={<Component />} />;
-        })}
-        <Route path="/" element={<Navigate replace to={redirectUrl} />} />
-      </Route>
-      <Route path="*" element={<Navigate replace to={redirectUrl} />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<PageLayout isAuth={isAuth} />}>
+          {routes.map(({ path, component: Component }, index) => {
+            return <Route key={index} path={path} element={<Component />} />;
+          })}
+          <Route path="/" element={<Navigate replace to={redirectUrl} />} />
+        </Route>
+        <Route path="*" element={<Navigate replace to={redirectUrl} />} />
+      </Routes>
+      <PopupComponent />
+    </>
   );
 };
 
-type PageLayoutProps = { isAuth: boolean; };
+type PageLayoutProps = { isAuth: boolean };
 const PageLayout: React.FC<PageLayoutProps> = ({ isAuth }) => {
-
   return (
-    <Layout
-      header={isAuth && <Header isAuth={isAuth} />}
-      footer={isAuth && <Footer />}
-      isAuth={isAuth}
-    />
+    <>
+      <Layout
+        header={isAuth && <Header isAuth={isAuth} />}
+        footer={isAuth && <Footer />}
+        isAuth={isAuth}
+      />
+    </>
   );
 };
 
 export const Routing = reflect({
   view: View,
   bind: {
-    appStatus: appStatusModel.stores.$appStatus
+    appStatus: appStatusModel.stores.$appStatus,
   },
 });

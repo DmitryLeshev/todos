@@ -8,6 +8,7 @@
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.0",
     "@mui/material": "^5.2.1",
+    "@mui/x-data-grid": "^5.2.2",
     "compose-function": "^3.0.3",
     "effector": "^22.1.2",
     "effector-forms": "0.0.22",

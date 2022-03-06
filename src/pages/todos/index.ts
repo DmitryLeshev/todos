@@ -1,15 +1,23 @@
 import { reflect } from "@effector/reflect";
+import { todoModel } from "entities/todo";
+import { paginationModel } from "features/pagination";
+
 import View from "./ui";
-import * as model from "./model";
+
+export type TodoList = todoModel.TodoList;
+export type TodoItem = todoModel.TodoItem;
+export type Pagination = paginationModel.Pagination | null;
 
 export const TodosPage = reflect({
   view: View,
   bind: {
-    pagination: model.stores.$pagination,
-    todos: model.stores.$todos,
-    isLoading: model.stores.$isLoading,
+    pagination: paginationModel.createPagination(
+      todoModel.actions.getTodosListFx
+    ).store,
+    todos: todoModel.stores.$todoLists,
+    isLoading: todoModel.stores.$isLoadingTodoList,
   },
   hooks: {
-    mounted: model.actions.getTodos
-  }
+    mounted: () => todoModel.actions.getTodosListFx(),
+  },
 });
